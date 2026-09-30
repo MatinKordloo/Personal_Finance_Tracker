@@ -1,31 +1,36 @@
-import csv
-import os
+import csv # To work with CSV files.
+import os # To check the file.
 
-from decimal import Decimal, InvalidOperation
-from datetime import datetime
-
+from decimal import Decimal, InvalidOperation # It is used for precise numbers.
+from datetime import datetime # To import date from python modules.
+# Saving Incomes, Expenses and Budgets in data file without being erased.
 INCOME_FILE = "data/income.csv"
 EXPENSE_FILE = "data/expense.csv"
 BUDGET_FILE = "data/budgets.csv"
 
-# store income records in a list
-# each income record will be saved as a dictionary
+# Store income records in a list.
+# Here used list to save records after together one by one.
+# Each income record will be saved as a dictionary.
 income_records = []
 
-# each expense record will be saved as a dictionary
+# Each expense record will be saved as a dictionary.
 expense_records = []
 
+# Each budgets will be saved as a dictionary.
+# Here I put budgets as a dictionary to find budgets with a specific key.
 budgets = {}
 
+# Functions and their usage in the program.
 def get_valid_amount():
     while True:
+        # strip() removes the leading and trailing whitespace from the string.
         amount_input = input("Enter amount: ").strip()
 
-        try:
+        try: # <-It executes the code; if the program crashes, it proceeds to the `except` block.
             amount = Decimal(amount_input)
 
             # Reject NaN and Infinity
-            if not amount.is_finite():
+            if not amount.is_finite(): # is_finite Returns Finite number
                 print("Amount must be a finite number.")
                 continue
 
@@ -35,7 +40,7 @@ def get_valid_amount():
                 continue
 
             # Amount can have maximum 2 decimal places
-            if amount.as_tuple().exponent < -2:
+            if amount.as_tuple().exponent < -2: # as_tuple() shows the internal structure of the decimal.
                 print("Amount can have maximum 2 decimal places.")
                 continue
 
@@ -49,7 +54,7 @@ def get_valid_date(): # Get a valid date in YYYY-MM-DD format
         # Ask the user to enter a date
         date = input("Enter date (YYYY-MM-DD): ")
         try:
-            # Convert the input string into a date object
+            # Convert the input string into a real date object with strptime()
             datetime.strptime(date, "%Y-%m-%d")
             # Return the valid date string
             return date
@@ -220,9 +225,14 @@ def compare_budget():
 
     print(f"\n===== Budget Comparison: {month} =====")
 
+    # Check whether a budget exists for the selected month.
+    found_budget = False
+
     # Compare each budget with actual expenses.
     for (budget_month, category), budget_amount in budgets.items():
         if budget_month == month:
+            found_budget = True
+
             actual = category_expenses.get(category, Decimal("0"))
             difference = budget_amount - actual
 
@@ -230,7 +240,11 @@ def compare_budget():
             print(f"Budget: {budget_amount:.2f}")
             print(f"Actual Expenses: {actual:.2f}")
             print(f"Remaining: {difference:.2f}")
-            print("-" * 30)
+            print("-" * 38)
+
+    # Display a message if no budget exists for this month.
+    if not found_budget:
+        print(f"   No budget found for this month.")
 
 def edit_transaction():
     # Edit an existing income or expense transaction by ID.
@@ -488,7 +502,7 @@ def view_summary():
     print(f"Balance: {balance}")
 
 def save_income_records():
-    """Save all income records to the CSV file."""
+    # Save all income records to the CSV file.
 
     with open(INCOME_FILE, "w", newline="", encoding="utf-8") as file:
         writer = csv.DictWriter(
@@ -547,7 +561,7 @@ def load_budgets():
         print("Warning: Budget file could not be read.")
 
 def load_income_records():
-    """Load income records from the CSV file safely."""
+    # Load income records from the CSV file safely.
 
     if not os.path.exists(INCOME_FILE):
         return
@@ -580,7 +594,7 @@ def load_income_records():
         print("Warning: Income file could not be read.")
 
 def load_expense_records():
-    """Load expense records from the CSV file safely."""
+    # Load expense records from the CSV file safely.
 
     if not os.path.exists(EXPENSE_FILE):
         return
@@ -620,23 +634,23 @@ def main():
         print("================================")
 
         # Display the available menu options.
-        print("1. Add Income")
-        print("2. Add Expense")
-        print("3. View Records")
-        print("4. Generate Reports")
-        print("5. Monthly Report")
-        print("6. Set Budget")
-        print("7. View Budgets")
-        print("8. Compare Budgets")
-        print("9. Edit Transaction")
-        print("10. Delete Transaction")
-        print("11. Backup Data")
-        print("12. Exit")
+        print("1. Add Income") # Add a new income record.
+        print("2. Add Expense") # Add a new expense record.
+        print("3. View Records") # View saved income and expense records.
+        print("4. Generate Reports") # Display the overall financial summary.
+        print("5. Monthly Report") # Display the financial report for a specific month.
+        print("6. Set Budget") # Set a budget for a category and month.
+        print("7. View Budgets") # Display all saved budgets.
+        print("8. Compare Budgets") # Compare budgets with actual expenses.
+        print("9. Edit Transaction") # Edit an existing transaction with ID.
+        print("10. Delete Transaction") # Delete an existing transaction with ID.
+        print("11. Backup Data") # Create a backup of financial data
+        print("12. Exit") # Exit the application
 
         # Get the user's choice
         choice = input("Choose an option (1-12):")
 
-        # Check which option the user selected
+        # Check which option the user selected.
         if choice == "1":
             add_income()
         elif choice == "2":

@@ -40,5 +40,5 @@ Then use the menu to select the desired option.
 
 ## Requirements
 
-* Python 3
+* Python 3.14.7
 * No external libraries are required.
